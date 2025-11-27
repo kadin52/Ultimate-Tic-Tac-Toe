@@ -13,9 +13,8 @@ from gui import pyg_util
 TWO_PLAYER = "2 Player"
 BEGINNER = "Beginner"
 MCTS = "MCTS"
-FOO1 = "Foo 1"
-FOO2 = "Foo 2"
-FOO3 = "Foo 3"
+AGENT = "Agent"
+
 
 # Turn order
 RANDOM_ORDER = "Random"
@@ -59,9 +58,8 @@ alg_options = pyg_util.GameOptions(  # Opponent settings
     BEGINNER,  # default value
     TWO_PLAYER,
     BEGINNER,
-    FOO1,
-    FOO2,
-    FOO3
+    AGENT,
+
 )
 
 order_options = pyg_util.GameOptions(  # Turn order settings
