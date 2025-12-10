@@ -1,19 +1,19 @@
 from math import inf
 from copy import deepcopy
 from boardclasses import GlobalBoard, LocalBoard
-
+from time import perf_counter
 COMP = 1  
 HUMAN = 2
 
 MAXIMIZING_PLAYER = True
 MINIMIZING_PLAYER = False
 
-W_GLOBAL_WIN = 100000
-W_GLOBAL_THREAT = 5000    
-LOCAL_WIN = 100         
-LOCAL_OPPONENT_THREAT = 15    
+W_GLOBAL_WIN = 10000
+W_GLOBAL_THREAT = 500
+LOCAL_WIN = 100       
+LOCAL_OPPONENT_THREAT = 20  
 LOCAL_PLAYER_THREAT = 10
-GLOBAL_CENTER_CONTROL = 25
+GLOBAL_CENTER_CONTROL = 10
 
 def get_possible_moves(global_board: GlobalBoard):
     moves = []
@@ -80,11 +80,20 @@ def evaluate_board(grid: list[list[int]], player: int) -> int:
     return score
 
 def heuristic(global_board: GlobalBoard, player: int) -> float:
-    score = 0
+
+    total_score = 0
+    opponent = (player % 2) + 1
     global_grid = global_board.board 
     
     global_score = evaluate_board(global_grid, player)
-    score += global_score * LOCAL_WIN 
+    total_score += global_score * LOCAL_WIN 
+
+    center_val = global_grid[1][1]
+    if center_val == player:
+        total_score += GLOBAL_CENTER_CONTROL
+    elif center_val == opponent:
+        total_score -= GLOBAL_CENTER_CONTROL
+
 
     for r in range(3):
         for c in range(3):
@@ -93,9 +102,9 @@ def heuristic(global_board: GlobalBoard, player: int) -> float:
             
             if global_grid[r][c] == 0:
                 local_score = evaluate_board(local_board.board, player)
-                score += local_score * 1.0 
+                total_score += local_score * 1.0 
                 
-    return score
+    return total_score
 
 
 def simulate_move(global_board: GlobalBoard, local_board_index: int, r: int, c: int, player: int):
@@ -113,12 +122,12 @@ def simulate_move(global_board: GlobalBoard, local_board_index: int, r: int, c: 
 
 def best_value(global_board: GlobalBoard, depth: int,
           alpha: float, beta: float,
-          is_maximizing: bool, player: int):
+          maximizing: bool, player: int):
     
     if depth == 0 or game_over(global_board):
         return heuristic(global_board, player), None
 
-    if is_maximizing:
+    if maximizing:
         return max_value(global_board, depth, alpha, beta, player)
     else:
         return min_value(global_board, depth, alpha, beta, player)
@@ -138,11 +147,11 @@ def max_value(global_board: GlobalBoard, depth: int,
         next_state = deepcopy(global_board)
         simulate_move(next_state, local_board_index, r, c, player)
 
-        eval_score, _ = best_value(next_state, depth - 1, alpha, beta,
+        evaluation, move = best_value(next_state, depth - 1, alpha, beta,
                               MINIMIZING_PLAYER, player)
 
-        if eval_score > value:
-            value = eval_score
+        if evaluation > value:
+            value = evaluation
             best_move = (local_board_index, r, c)
 
         alpha = max(alpha, value)
@@ -166,11 +175,11 @@ def min_value(global_board: GlobalBoard, depth: int,
         next_state = deepcopy(global_board)
         simulate_move(next_state, local_board_index, r, c, opponent)
 
-        evaluation_score, _ = best_value(next_state, depth - 1, alpha, beta,
+        evaluation, _ = best_value(next_state, depth - 1, alpha, beta,
                               MAXIMIZING_PLAYER, player)
 
-        if evaluation_score < value:
-            value = evaluation_score
+        if evaluation < value:
+            value = evaluation
             best_move = (local_board_index, r, c)
 
         beta = min(beta, value)
@@ -181,12 +190,17 @@ def min_value(global_board: GlobalBoard, depth: int,
 
 def minimax(global_board: GlobalBoard, depth: int,
             alpha: float, beta: float,
-            is_maximizing: bool, player: int):
-    return best_value(global_board, depth, alpha, beta, is_maximizing, player)
+            maximizing: bool, player: int):
+    return best_value(global_board, depth, alpha, beta, maximizing, player)
 
 def bot_turn(global_board: GlobalBoard, bot_player: int):
-    score, move = minimax(global_board, 3, -inf, inf, MAXIMIZING_PLAYER, bot_player)
+    start = perf_counter()
+
+    score, move = minimax(global_board, 5, -inf, inf, MAXIMIZING_PLAYER, bot_player)
     
+    duration = perf_counter() - start
+    # print(f"Minimax computed in {duration:.4f} seconds")
+
     if move:
         local_board_index, r, c = move
         return global_board.local_board_list[local_board_index], r, c

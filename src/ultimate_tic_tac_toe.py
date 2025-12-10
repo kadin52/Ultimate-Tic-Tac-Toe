@@ -311,19 +311,19 @@ def main() -> None:
 
                 # If the mouse has been moved and is within the global board, draw a trail that displays an X or O
                 # depending on the turn
-                elif event.type == pygame.MOUSEMOTION and mouse[0] < GLOBALBOARDSIZE - int(1.1 * DIFF):
-                    # draw an 'X' or 'O' where the mouse is pointed
-                    if GLOBALS.player == 1:
-                        draw_x(mouse, screen)
-                    else:
-                        pygame.draw.circle(screen, RED, mouse, DIFF, 4)
+                # elif event.type == pygame.MOUSEMOTION and mouse[0] < GLOBALBOARDSIZE - int(1.1 * DIFF):
+                #     # draw an 'X' or 'O' where the mouse is pointed
+                #     if GLOBALS.player == 1:
+                #         draw_x(mouse, screen)
+                #     else:
+                #         pygame.draw.circle(screen, RED, mouse, DIFF, 4)
 
-                    # after the display is updated, redraw the board so that the 'X' or 'O' will disappear the next
-                    # time the display is updated
-                    mousebox = pygame.Rect(mouse[0] - (DIFF // 2), mouse[1] - (DIFF // 2), DIFF,
-                                           DIFF)
-                    pygame.display.update(mousebox)
-                    draw_board(False)
+                #     # after the display is updated, redraw the board so that the 'X' or 'O' will disappear the next
+                #     # time the display is updated
+                #     mousebox = pygame.Rect(mouse[0] - (DIFF // 2), mouse[1] - (DIFF // 2), DIFF,
+                #                            DIFF)
+                #     pygame.display.update(mousebox)
+                #     draw_board(False)
 
 
 def keep_alive() -> None:
