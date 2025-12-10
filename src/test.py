@@ -10,7 +10,8 @@ def random_bot_turn(global_board, bot_player):
         return global_board.local_board_list[local_board], row, col
     return None
 
-def bot_test(total_games):
+def bot_test(total_games, outside_bot_turn: callable):
+
     minimax_wins_player_x = 0
     minimax_wins_player_o = 0
     outside_wins_player_x = 0
@@ -53,7 +54,7 @@ def bot_test(total_games):
                 local_board, row, col =  result
                 simulate_move(global_board, local_board.index, row, col, minimax_bot)
             else:
-                result = random_bot_turn(global_board, outside_bot)
+                result = outside_bot_turn(global_board, outside_bot)
                 local_board, row, col =  result
                 simulate_move(global_board, local_board.index, row, col, outside_bot)
 
@@ -71,5 +72,5 @@ def bot_test(total_games):
     
 
 if __name__ == "__main__":
-    total_games = 100
-    bot_test(total_games)
+    total_games = 10
+    bot_test(total_games, random_bot_turn)

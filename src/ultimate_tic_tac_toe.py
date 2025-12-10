@@ -2,7 +2,9 @@ from typing import Optional  # also Tuple from gui.pyg_init
 import random as rand
 import sys
 from boardclasses import GlobalBoard, LocalBoard
-import minimax
+# import minimax
+import ultimate_evaluation
+import ultimate_minimax
 from gui.pyg_init import *  # contains pygame import
 from gui import pyg_util
 
@@ -11,9 +13,9 @@ from gui import pyg_util
 
 # Opponent setting
 TWO_PLAYER = "2 Player"
-BEGINNER = "Beginner"
-MCTS = "MCTS"
-AGENT = "Agent"
+MINIMAX="Minimax"
+
+
 
 
 # Turn order
@@ -55,10 +57,10 @@ quitbutton = pyg_util.Button(  # Quit game
 
 alg_options = pyg_util.GameOptions(  # Opponent settings
     (GLOBALBOARDSIZE + BOARDERSIZE, LOCALBOARDSIZE + WHITESPACE),
-    BEGINNER,  # default value
+    MINIMAX,
     TWO_PLAYER,
-    BEGINNER,
-    AGENT,
+    MINIMAX,
+ 
 
 )
 
@@ -251,8 +253,12 @@ def main() -> None:
 
     while not GLOBALS.game_over:
         if GLOBALS.player == GLOBALS.bot:  # bot turn
-            if GLOBALS.bot_alg == BEGINNER:
-                lb, row, col = minimax.bot_turn(GLOBALS.global_board, GLOBALS.bot)  # get the bot's move
+            if GLOBALS.bot_alg == MINIMAX:
+                # lb, row, col = minimax.bot_turn(GLOBALS.global_board, GLOBALS.bot)  # get the bot's move
+                # lb, row, col = ultimate_evaluation.bot_turn(GLOBALS.global_board, GLOBALS.bot)
+                lb, row, col = ultimate_minimax.bot_turn(GLOBALS.global_board, GLOBALS.bot)
+                
+
             else:
                 raise Exception("Undefined bot algorithm")
 
