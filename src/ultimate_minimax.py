@@ -14,6 +14,7 @@ LOCAL_WIN = 100
 LOCAL_OPPONENT_THREAT = 20  
 LOCAL_PLAYER_THREAT = 10
 GLOBAL_CENTER_CONTROL = 10
+GLOBAL_SCALE = 10
 
 def get_possible_moves(global_board: GlobalBoard):
     moves = []
@@ -85,16 +86,18 @@ def heuristic(global_board: GlobalBoard, player: int) -> float:
     opponent = (player % 2) + 1
     global_grid = global_board.board 
     
-    global_score = evaluate_board(global_grid, player)
-    total_score += global_score * LOCAL_WIN 
+    #global board
+    global_score = evaluate_board(global_grid, player) * GLOBAL_SCALE
+    total_score += global_score 
 
+    #center control
     center_val = global_grid[1][1]
     if center_val == player:
         total_score += GLOBAL_CENTER_CONTROL
     elif center_val == opponent:
         total_score -= GLOBAL_CENTER_CONTROL
 
-
+    #local boards
     for r in range(3):
         for c in range(3):
             local_board_index = r * 3 + c
@@ -194,11 +197,11 @@ def minimax(global_board: GlobalBoard, depth: int,
     return best_value(global_board, depth, alpha, beta, maximizing, player)
 
 def bot_turn(global_board: GlobalBoard, bot_player: int):
-    start = perf_counter()
+    # start = perf_counter()
 
     score, move = minimax(global_board, 5, -inf, inf, MAXIMIZING_PLAYER, bot_player)
     
-    duration = perf_counter() - start
+    # duration = perf_counter() - start
     # print(f"Minimax computed in {duration:.4f} seconds")
 
     if move:

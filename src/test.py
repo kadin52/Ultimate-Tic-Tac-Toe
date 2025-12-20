@@ -72,5 +72,5 @@ def bot_test(total_games, outside_bot_turn: callable):
     
 
 if __name__ == "__main__":
-    total_games = 10
+    total_games = 20
     bot_test(total_games, random_bot_turn)
