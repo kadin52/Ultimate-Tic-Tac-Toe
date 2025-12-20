@@ -2,8 +2,6 @@ from typing import Optional  # also Tuple from gui.pyg_init
 import random as rand
 import sys
 from boardclasses import GlobalBoard, LocalBoard
-# import minimax
-import ultimate_evaluation
 import ultimate_minimax
 from gui.pyg_init import *  # contains pygame import
 from gui import pyg_util
